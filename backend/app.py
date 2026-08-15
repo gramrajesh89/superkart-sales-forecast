@@ -1,4 +1,5 @@
 
+
 import numpy as np
 import pandas as pd
 import joblib
@@ -71,18 +72,18 @@ def predict_sales_batch():
     try:
         # Get the uploaded CSV file from the request
         file = request.files['file']
-        
+
         # Read the CSV file into a Pandas DataFrame
         input_data = pd.read_csv(file)
 
         # Make prediction
         predicted_sales = model.predict(input_data).tolist()
-       
-        # Create a dictionary of predictions with IDs as keys
-        Product_Ids = input_data['Product_Id'].tolist()  # Assuming 'Product_Id' is the Key column
-        output_dict = dict(zip(Product_Ids, predicted_sales))  # Use actual prices
-       
-        return output_dict
+
+        # Use the row index as the key for each prediction. Convert keys to strings
+        # because JSON object keys must be strings.
+        output_dict = {str(index): prediction for index, prediction in zip(input_data.index, predicted_sales)}
+
+        return jsonify(output_dict)
 
     except Exception as e:
         print("Error during prediction:", str(e))
