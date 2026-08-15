@@ -76,11 +76,8 @@ def predict_sales_batch():
         input_data = pd.read_csv(file)
 
         # Make prediction
-        prediction_log = model.predict(input_data).tolist()
-
-        # Calculate actual prices
-        predicted_sales = [round(float(np.exp(log_price)), 2) for log_price in prediction_log]
-        
+        predicted_sales = model.predict(input_data).tolist()
+       
         # Create a dictionary of predictions with IDs as keys
         Product_Ids = input_data['Product_Id'].tolist()  # Assuming 'Product_Id' is the Key column
         output_dict = dict(zip(Product_Ids, predicted_sales))  # Use actual prices
